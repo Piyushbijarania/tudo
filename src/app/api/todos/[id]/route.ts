@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession()
@@ -27,7 +27,7 @@ export async function PATCH(
             )
         }
 
-        const { id } = params
+        const { id } = await context.params
         const { title, description, completed } = await request.json()
 
         const existingTodo = await prisma.todo.findUnique({
@@ -62,7 +62,7 @@ export async function PATCH(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession()
@@ -85,7 +85,7 @@ export async function DELETE(
             )
         }
 
-        const { id } = params
+        const { id } = await context.params
 
         const existingTodo = await prisma.todo.findUnique({
             where: { id }
